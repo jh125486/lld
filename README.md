@@ -17,48 +17,40 @@ I got tired of fighting the LinkedInLearning API, and other Python programs, so 
 - **LinkedIn Learning Account**: Required to access course content.
 
 ## Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/jh125486/lld.git
-   cd lld
-   ```
 
-2. Install dependencies:
+You can either download a binary for your architecture from the [releases](/releases) page, or install as below:
+
    ```bash
-   go mod tidy
+   go install github.com/jh125486/lld@latest
    ```
 
 ## Usage
-1. Build the tool:
+1. Run the tool with the course URL:
    ```bash
-   go build -o lld
+   lld -help
    ```
+2. Flags:
 
-2. Run the tool with the course URL:
-   ```bash
-   ./lld -courseURL="https://www.linkedin.com/learning/course-name"
-   ```
-3. Required flags:
+   Required flags:
     - `-course`: The URL of the LinkedIn Learning course you want to download.
     - `-sso`: The URL for enterprise Single Sign-On (SSO).
 
-One of the following flags is also required:
+   One of the following flags is also required:
     - `-transcripts`: Download transcripts.
     - `-videos`: Download videos.
 
-4. Optional flags:
+   Optional flags:
     - `-json`: Save transcripts in `.json` format.
     - `-backoff`: Set a custom backoff time for retries.
     - `-timeout`: Set a custom timeout for browser operations.
 
 ### Example command:
    ```bash
-   ./lld go run . \
-      -sso 'http://www.linkedin.com/checkpoint/enterprise/login/74650474?application=learning&appInstanceId=46437124&authModeId=6536630950934134784' \
-      -course 'https://www.linkedin.com/learning/how-to-speak-smarter-when-put-on-the-spot/spontaneity-takes-preparation-20294708?u=74650474' \
-      -transcripts \
-      -json \
-      -videos
+   lld -sso 'http://www.linkedin.com/checkpoint/enterprise/login/74650474?application=learning&appInstanceId=46437124&authModeId=6536630950934134784' \
+       -course 'https://www.linkedin.com/learning/how-to-speak-smarter-when-put-on-the-spot/spontaneity-takes-preparation-20294708?u=74650474' \
+       -transcripts \
+       -json \
+       -videos
    ```
 
 ## Notes
@@ -66,4 +58,4 @@ One of the following flags is also required:
 - Use responsibly and adhere to LinkedIn Learning's terms of service.
 
 ## License
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+This project is licensed under the MIT License. See the [License](LICENSE) file for details.
