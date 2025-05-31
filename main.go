@@ -22,10 +22,10 @@ type VideoEntry struct {
 	Href       string `json:"href"`
 	Section    string `json:"section"`
 	Title      string `json:"title"`
-	Index      int    `json:"index"`
 	Duration   string `json:"duration"`
 	Transcript string `json:"transcript,omitempty"`
 	filename   string
+	Index      int `json:"index"`
 }
 
 var invalidRE = regexp.MustCompile(`[^a-zA-Z0-9._-]+`)
@@ -93,27 +93,31 @@ func main() {
 	}
 	log.Printf("🎯 Found %d video(s) across %d sections\n", len(videos), countSections(videos))
 
+	processVideos(ctx, videos, backoff, *dlTranscripts, *saveJSON, *dlVideos)
+
+	log.Println("✅ All courses info saved.")
+}
+
+func processVideos(ctx context.Context, videos []VideoEntry, backoff *time.Duration, dlTranscripts, saveJSON, dlVideos bool) {
 	for i, video := range videos {
 		log.Printf("▶️ [%d/%d] %v: %s \n", i+1, len(videos), video.Section, video.Title)
 		if err := visitVideo(ctx, video.Href, *backoff, 0); err != nil {
 			log.Printf("🙅 failed to visit video: %v", err)
 			continue
 		}
-		if *dlTranscripts {
-			if err := downloadTranscript(ctx, video, *saveJSON); err != nil {
+		if dlTranscripts {
+			if err := downloadTranscript(ctx, video, saveJSON); err != nil {
 				log.Printf("%v -> skipping.", err)
 				continue
 			}
 		}
-		if *dlVideos {
+		if dlVideos {
 			if err := downloadVideo(ctx, video); err != nil {
 				log.Printf("%v -> skipping.", err)
 				continue
 			}
 		}
 	}
-
-	log.Println("✅ All courses info saved.")
 }
 
 func downloadTranscript(ctx context.Context, video VideoEntry, saveJSON bool) error {
@@ -147,6 +151,7 @@ func downloadTranscript(ctx context.Context, video VideoEntry, saveJSON bool) er
 			return fmt.Errorf("❌ failed to write JSON: %w", err)
 		}
 		log.Printf("💾 transcript saved: %s\n", filename)
+
 		return nil
 	}
 
@@ -209,6 +214,7 @@ func downloadVideo(ctx context.Context, video VideoEntry) error {
 	}
 
 	log.Printf("💾 video saved: %s\n", filename)
+
 	return nil
 }
 
@@ -269,6 +275,7 @@ func countSections(videos []VideoEntry) int {
 	for _, v := range videos {
 		seen[v.Section] = struct{}{}
 	}
+
 	return len(seen)
 }
 
@@ -290,6 +297,7 @@ func visitVideo(ctx context.Context, href string, backoff time.Duration, count i
 		}
 		log.Printf("❌ navigation failed (%v), retrying\n", err)
 		time.Sleep(backoff)
+
 		return visitVideo(ctx, href, backoff, count+1)
 	}
 	if rateLimited {
