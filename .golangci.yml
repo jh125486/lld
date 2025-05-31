@@ -1,0 +1,92 @@
+version: "2"
+linters:
+  enable:
+    - bodyclose
+    - funlen
+    - gochecknoglobals
+    - gochecknoinits
+    - gocognit
+    - goconst
+    - gocyclo
+    - godot
+    - gosec
+    - lll
+    - misspell
+    - nakedret
+    - nlreturn
+    - noctx
+    - paralleltest
+    - prealloc
+    - revive
+    - sloglint
+    - staticcheck
+    - tagalign
+    - testifylint
+    - testpackage
+    - thelper
+    - tparallel
+    - unconvert
+    - unparam
+    - usestdlibvars
+    - whitespace
+  settings:
+    dupl:
+      threshold: 100
+    goconst:
+      min-len: 2
+      min-occurrences: 2
+    gocritic:
+      enable-all: true
+      enabled-tags:
+        - diagnostic
+        - experimental
+        - opinionated
+        - performance
+    gocyclo:
+      min-complexity: 10
+    govet:
+      enable-all: true
+    lll:
+      line-length: 140
+    misspell:
+      locale: US
+    nlreturn:
+      block-size: 4
+    tagalign:
+      order:
+        - name
+        - short
+        - env
+        - default
+        - help
+      strict: true
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - funlen
+          - gocyclo
+          - govet
+          - nlreturn
+        path: _test\.go$
+    paths:
+      - testdata
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - testdata
+      - third_party$
+      - builtin$
+      - examples$
